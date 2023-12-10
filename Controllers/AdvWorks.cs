@@ -40,20 +40,21 @@ namespace Grad_Project.Controllers
 
         // GET: api/AdvWorks/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(int id)
+        public IActionResult GetProduct(int id)
         {
-          if (_context.Products == null)
-          {
-              return NotFound();
-          }
-            var product = await _context.Products.FindAsync(id);
+            var query = from p in _context.Products
+                        join ppp in _context.Productproductphotos on p.ProductId equals ppp.ProductId
+                        join pp in _context.Productphotos on ppp.ProductPhotoId equals pp.ProductPhotoId
+                        where p.ProductId == id 
+                        select new
+                        {
+                            Product = p,
+                            ProductProductPhoto = ppp,
+                            ProductPhoto = pp
+                        };
 
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return product;
+            var result =  query.FirstOrDefault();
+            return Ok(result);
         }
 
         //[HttpGet("image")]
