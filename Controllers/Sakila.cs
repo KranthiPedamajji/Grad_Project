@@ -11,17 +11,17 @@ namespace Grad_Project.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SakilaCustomers : ControllerBase
+    public class Sakila : ControllerBase
     {
         private readonly sakilaContext _context;
 
-        public SakilaCustomers(sakilaContext context)
+        public Sakila(sakilaContext context)
         {
             _context = context;
         }
 
         // GET: api/SakilaCustomers
-        [HttpGet("Sakila")]
+        [HttpGet("customers")]
         public async Task<ActionResult<IEnumerable<Customer>>> GetSakilaCustomers()
         {
           if (_context.Customers == null)
@@ -48,6 +48,33 @@ namespace Grad_Project.Controllers
 
             return customer;
         }
+
+
+        [HttpGet("product")]
+        public async Task<ActionResult<IEnumerable<Film>>> SakilaProducts(ushort id)
+        {
+            var products = await _context.Films.ToListAsync();
+
+            return products;
+        }
+
+        [HttpGet("product/{id}")]
+        public async Task<ActionResult<Film>> SakilaProduct(ushort id)
+        {
+            if (_context.Films == null)
+            {
+                return NotFound();
+            }
+            var films = await _context.Films.FindAsync(id);
+
+            if (films == null)
+            {
+                return NotFound();
+            }
+
+            return films;
+        }
+
 
         //// PUT: api/SakilaCustomers/5
         //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
