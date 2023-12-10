@@ -112,6 +112,7 @@ namespace Grad_Project.Controllers
             _context.Customers.Remove(customer);
             await _context.SaveChangesAsync();
 
+
             return NoContent();
         }
 
