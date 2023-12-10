@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Grad_Project.Models
+﻿namespace Grad_Project.Models
 {
-    public partial class Customer
+    public class CustomerModel
     {
-        public Customer()
-        {
-            Carts = new HashSet<Cart>();
-            Orders = new HashSet<Order>();
-            Wishlists = new HashSet<Wishlist>();
-        }
-
+        // Properties for customer data
+        // Add properties based on your actual Customers table structure
         public int CustomerId { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
@@ -28,10 +20,7 @@ namespace Grad_Project.Models
         public string? WebPage { get; set; }
         public string? Notes { get; set; }
         public byte[]? Attachments { get; set; }
-
-        public virtual Customercredential? Customercredential { get; set; }
-        public virtual ICollection<Cart> Carts { get; set; }
-        public virtual ICollection<Order> Orders { get; set; }
-        public virtual ICollection<Wishlist> Wishlists { get; set; }
+        public string CustomerName { get; set; }
+        public string PasswordHash { get; set; }
     }
 }

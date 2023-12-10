@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-#nullable disable
-
 namespace Grad_Project.Models
 {
     public partial class Order
@@ -13,7 +11,7 @@ namespace Grad_Project.Models
         public decimal? TotalPrice { get; set; }
         public int? StatusId { get; set; }
 
-        public virtual Customer Customer { get; set; }
-        public virtual Orderstatus Status { get; set; }
+        public virtual Customer? Customer { get; set; }
+        public virtual Orderstatus? Status { get; set; }
     }
 }

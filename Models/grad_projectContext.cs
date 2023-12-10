@@ -1,8 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-
-#nullable disable
 
 namespace Grad_Project.Models
 {
@@ -17,27 +16,56 @@ namespace Grad_Project.Models
         {
         }
 
-        public virtual DbSet<Customer> Customers { get; set; }
-        public virtual DbSet<Order> Orders { get; set; }
-        public virtual DbSet<Orderstatus> Orderstatuses { get; set; }
-        public virtual DbSet<Product> Products { get; set; }
-        public virtual DbSet<Rating> Ratings { get; set; }
-        public virtual DbSet<Restocking> Restockings { get; set; }
-        public virtual DbSet<Restockingstatus> Restockingstatuses { get; set; }
-        public virtual DbSet<Supplier> Suppliers { get; set; }
-        public virtual DbSet<Wishlist> Wishlists { get; set; }
+        public virtual DbSet<Cart> Carts { get; set; } = null!;
+        public virtual DbSet<Customer> Customers { get; set; } = null!;
+        public virtual DbSet<Customercredential> Customercredentials { get; set; } = null!;
+        public virtual DbSet<Order> Orders { get; set; } = null!;
+        public virtual DbSet<Orderstatus> Orderstatuses { get; set; } = null!;
+        public virtual DbSet<Product> Products { get; set; } = null!;
+        public virtual DbSet<Rating> Ratings { get; set; } = null!;
+        public virtual DbSet<Restocking> Restockings { get; set; } = null!;
+        public virtual DbSet<Restockingstatus> Restockingstatuses { get; set; } = null!;
+        public virtual DbSet<Supplier> Suppliers { get; set; } = null!;
+        public virtual DbSet<Wishlist> Wishlists { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                //optionsBuilder.UseMySQL("Server=localhost;Port=3306;Database=grad_project;User=root;Password=MysqlKranthi;");
+                optionsBuilder.UseMySQL("Server=localhost;Port=3306;Database=grad_project;User=root;Password=MysqlKranthi;");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Cart>(entity =>
+            {
+                entity.ToTable("cart");
+
+                entity.HasIndex(e => e.CustomerId, "customer_id");
+
+                entity.HasIndex(e => e.ProductId, "product_id");
+
+                entity.Property(e => e.CartId).HasColumnName("cart_id");
+
+                entity.Property(e => e.CustomerId).HasColumnName("customer_id");
+
+                entity.Property(e => e.ProductId).HasColumnName("product_id");
+
+                entity.Property(e => e.Quantity).HasColumnName("quantity");
+
+                entity.HasOne(d => d.Customer)
+                    .WithMany(p => p.Carts)
+                    .HasForeignKey(d => d.CustomerId)
+                    .HasConstraintName("cart_ibfk_1");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.Carts)
+                    .HasForeignKey(d => d.ProductId)
+                    .HasConstraintName("cart_ibfk_2");
+            });
+
             modelBuilder.Entity<Customer>(entity =>
             {
                 entity.ToTable("customers");
@@ -46,13 +74,9 @@ namespace Grad_Project.Models
 
                 entity.Property(e => e.CustomerId).HasColumnName("customer_id");
 
-                entity.Property(e => e.Address)
-                    .HasColumnType("longtext")
-                    .HasColumnName("address");
+                entity.Property(e => e.Address).HasColumnName("address");
 
-                entity.Property(e => e.Attachments)
-                    .HasColumnType("longblob")
-                    .HasColumnName("attachments");
+                entity.Property(e => e.Attachments).HasColumnName("attachments");
 
                 entity.Property(e => e.BusinessPhone)
                     .HasMaxLength(25)
@@ -90,21 +114,40 @@ namespace Grad_Project.Models
                     .HasMaxLength(25)
                     .HasColumnName("mobile_phone");
 
-                entity.Property(e => e.Notes)
-                    .HasColumnType("longtext")
-                    .HasColumnName("notes");
+                entity.Property(e => e.Notes).HasColumnName("notes");
 
                 entity.Property(e => e.StateProvince)
                     .HasMaxLength(50)
                     .HasColumnName("state_province");
 
-                entity.Property(e => e.WebPage)
-                    .HasColumnType("longtext")
-                    .HasColumnName("web_page");
+                entity.Property(e => e.WebPage).HasColumnName("web_page");
 
                 entity.Property(e => e.ZipPostalCode)
                     .HasMaxLength(15)
                     .HasColumnName("zip_postal_code");
+            });
+
+            modelBuilder.Entity<Customercredential>(entity =>
+            {
+                entity.HasKey(e => e.CustomerId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("customercredentials");
+
+                entity.Property(e => e.CustomerId).HasColumnName("customer_id");
+
+                entity.Property(e => e.CustomerName)
+                    .HasMaxLength(50)
+                    .HasColumnName("customer_name");
+
+                entity.Property(e => e.PasswordHash)
+                    .HasMaxLength(255)
+                    .HasColumnName("password_hash");
+
+                entity.HasOne(d => d.Customer)
+                    .WithOne(p => p.Customercredential)
+                    .HasForeignKey<Customercredential>(d => d.CustomerId)
+                    .HasConstraintName("fk_customer_credentials");
             });
 
             modelBuilder.Entity<Order>(entity =>
@@ -126,7 +169,7 @@ namespace Grad_Project.Models
                 entity.Property(e => e.StatusId).HasColumnName("status_id");
 
                 entity.Property(e => e.TotalPrice)
-                    .HasColumnType("decimal(19,4)")
+                    .HasPrecision(19, 4)
                     .HasColumnName("total_price");
 
                 entity.HasOne(d => d.Customer)
@@ -160,24 +203,20 @@ namespace Grad_Project.Models
 
                 entity.Property(e => e.ProductId).HasColumnName("product_id");
 
-                entity.Property(e => e.Attachments)
-                    .HasColumnType("longblob")
-                    .HasColumnName("attachments");
+                entity.Property(e => e.Attachments).HasColumnName("attachments");
 
                 entity.Property(e => e.Category)
                     .HasMaxLength(50)
                     .HasColumnName("category");
 
-                entity.Property(e => e.Description)
-                    .HasColumnType("longtext")
-                    .HasColumnName("description");
+                entity.Property(e => e.Description).HasColumnName("description");
 
                 entity.Property(e => e.Discontinued).HasColumnName("discontinued");
 
                 entity.Property(e => e.InStock).HasColumnName("in_stock");
 
                 entity.Property(e => e.ListPrice)
-                    .HasColumnType("decimal(19,4)")
+                    .HasPrecision(19, 4)
                     .HasColumnName("list_price");
 
                 entity.Property(e => e.MinimumInstockQuantity).HasColumnName("minimum_instock_quantity");
@@ -195,7 +234,7 @@ namespace Grad_Project.Models
                     .HasColumnName("quantity_per_unit");
 
                 entity.Property(e => e.StandardCost)
-                    .HasColumnType("decimal(19,4)")
+                    .HasPrecision(19, 4)
                     .HasColumnName("standard_cost");
 
                 entity.Property(e => e.TargetLevel).HasColumnName("target_level");
@@ -209,7 +248,9 @@ namespace Grad_Project.Models
 
                 entity.Property(e => e.RatingId).HasColumnName("rating_id");
 
-                entity.Property(e => e.Comment).HasColumnName("comment");
+                entity.Property(e => e.Comment)
+                    .HasColumnType("text")
+                    .HasColumnName("comment");
 
                 entity.Property(e => e.ProductId).HasColumnName("product_id");
 
@@ -218,7 +259,7 @@ namespace Grad_Project.Models
                     .HasColumnName("rating_date");
 
                 entity.Property(e => e.RatingValue)
-                    .HasColumnType("decimal(3,2)")
+                    .HasPrecision(3)
                     .HasColumnName("rating_value");
 
                 entity.HasOne(d => d.Product)

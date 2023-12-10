@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-#nullable disable
-
 namespace Grad_Project.Models
 {
     public partial class Orderstatus
@@ -13,7 +11,7 @@ namespace Grad_Project.Models
         }
 
         public int StatusId { get; set; }
-        public string StatusName { get; set; }
+        public string? StatusName { get; set; }
 
         public virtual ICollection<Order> Orders { get; set; }
     }

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-#nullable disable
-
 namespace Grad_Project.Models
 {
     public partial class Wishlist
@@ -12,7 +10,7 @@ namespace Grad_Project.Models
         public int? ProductId { get; set; }
         public DateTime? DateAdded { get; set; }
 
-        public virtual Customer Customer { get; set; }
-        public virtual Product Product { get; set; }
+        public virtual Customer? Customer { get; set; }
+        public virtual Product? Product { get; set; }
     }
 }

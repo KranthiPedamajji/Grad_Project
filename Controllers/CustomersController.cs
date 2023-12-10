@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Grad_Project.Models;
+using MySql.Data.MySqlClient;
+using System.Data;
 
 namespace Grad_Project.Controllers
 {
@@ -120,5 +122,43 @@ namespace Grad_Project.Controllers
         {
             return (_context.Customers?.Any(e => e.CustomerId == id)).GetValueOrDefault();
         }
+
+        [HttpPost("insert")]
+        public IActionResult SignUpCustomer([FromBody] CustomerModel customer)
+        {
+            try
+            {
+                _context.Database.ExecuteSqlRaw(
+               "InsertCustomerAndCredentials",
+               new
+               {
+                   p_first_name = customer.FirstName,
+                   p_last_name = customer.LastName,
+                   p_email = customer.Email,
+                   p_job_title = customer.JobTitle,
+                   p_business_phone = customer.BusinessPhone,
+                   p_home_phone = customer.HomePhone,
+                   p_mobile_phone = customer.MobilePhone,
+                   p_address = customer.Address,
+                   p_city = customer.City,
+                   p_state_province = customer.StateProvince,
+                   p_zip_postal_code = customer.ZipPostalCode,
+                   p_country_region = customer.CountryRegion,
+                   p_web_page = customer.WebPage,
+                   p_notes = customer.Notes,
+                   p_attachments = customer.Attachments,
+                   p_customer_name = customer.CustomerName,
+                   p_password_hash = customer.PasswordHash
+               }
+
+           );
+                return Ok("Customer and credentials inserted successfully.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: {ex.Message}");
+            }
+        }
+
     }
 }
