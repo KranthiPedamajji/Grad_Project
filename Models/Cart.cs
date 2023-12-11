@@ -9,7 +9,7 @@ namespace Grad_Project.Models
         public int? CustomerId { get; set; }
         public string? ProductName { get; set; }
         public int? Quantity { get; set; }
-        public decimal? Price { get; set; }
+        public int? Price { get; set; }
 
         public virtual Customer? Customer { get; set; }
     }

@@ -51,9 +51,7 @@ namespace Grad_Project.Models
 
                 entity.Property(e => e.CustomerId).HasColumnName("customer_id");
 
-                entity.Property(e => e.Price)
-                    .HasPrecision(20, 20)
-                    .HasColumnName("price");
+                entity.Property(e => e.Price).HasColumnName("price");
 
                 entity.Property(e => e.ProductName)
                     .HasMaxLength(300)
@@ -166,8 +164,6 @@ namespace Grad_Project.Models
                 entity.Property(e => e.OrderDate)
                     .HasColumnType("date")
                     .HasColumnName("order_date");
-
-                entity.Property(e => e.OrderDetailId).HasColumnName("orderDetail_id");
 
                 entity.Property(e => e.StatusId).HasColumnName("status_id");
 
