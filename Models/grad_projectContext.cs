@@ -20,6 +20,7 @@ namespace Grad_Project.Models
         public virtual DbSet<Customer> Customers { get; set; } = null!;
         public virtual DbSet<Customercredential> Customercredentials { get; set; } = null!;
         public virtual DbSet<Order> Orders { get; set; } = null!;
+        public virtual DbSet<Orderdetail> Orderdetails { get; set; } = null!;
         public virtual DbSet<Orderstatus> Orderstatuses { get; set; } = null!;
         public virtual DbSet<Partner> Partners { get; set; } = null!;
         public virtual DbSet<Product> Products { get; set; } = null!;
@@ -50,7 +51,9 @@ namespace Grad_Project.Models
 
                 entity.Property(e => e.CustomerId).HasColumnName("customer_id");
 
-                entity.Property(e => e.Price).HasColumnName("price");
+                entity.Property(e => e.Price)
+                    .HasPrecision(20, 20)
+                    .HasColumnName("price");
 
                 entity.Property(e => e.ProductName)
                     .HasMaxLength(300)
@@ -152,7 +155,7 @@ namespace Grad_Project.Models
             {
                 entity.ToTable("orders");
 
-                entity.HasIndex(e => e.CustomerId, "idx_orders_customer_id");
+                entity.HasIndex(e => e.CustomerId, "customer_id");
 
                 entity.HasIndex(e => e.StatusId, "status_id");
 
@@ -163,6 +166,8 @@ namespace Grad_Project.Models
                 entity.Property(e => e.OrderDate)
                     .HasColumnType("date")
                     .HasColumnName("order_date");
+
+                entity.Property(e => e.OrderDetailId).HasColumnName("orderDetail_id");
 
                 entity.Property(e => e.StatusId).HasColumnName("status_id");
 
@@ -179,6 +184,23 @@ namespace Grad_Project.Models
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.StatusId)
                     .HasConstraintName("orders_ibfk_2");
+            });
+
+            modelBuilder.Entity<Orderdetail>(entity =>
+            {
+                entity.ToTable("orderdetails");
+
+                entity.HasIndex(e => e.OrderId, "FK_OrderDetails_Orders");
+
+                entity.Property(e => e.OrderId).HasColumnName("order_id");
+
+                entity.Property(e => e.ProductName).HasMaxLength(255);
+
+                entity.HasOne(d => d.Order)
+                    .WithMany(p => p.Orderdetails)
+                    .HasForeignKey(d => d.OrderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_OrderDetails_Orders");
             });
 
             modelBuilder.Entity<Orderstatus>(entity =>
