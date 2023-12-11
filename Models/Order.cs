@@ -5,6 +5,11 @@ namespace Grad_Project.Models
 {
     public partial class Order
     {
+        public Order()
+        {
+            Orderdetails = new HashSet<Orderdetail>();
+        }
+
         public int OrderId { get; set; }
         public int? CustomerId { get; set; }
         public DateTime? OrderDate { get; set; }
@@ -13,5 +18,6 @@ namespace Grad_Project.Models
 
         public virtual Customer? Customer { get; set; }
         public virtual Orderstatus? Status { get; set; }
+        public virtual ICollection<Orderdetail> Orderdetails { get; set; }
     }
 }
