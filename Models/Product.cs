@@ -7,10 +7,8 @@ namespace Grad_Project.Models
     {
         public Product()
         {
-            Carts = new HashSet<Cart>();
             Ratings = new HashSet<Rating>();
             Restockings = new HashSet<Restocking>();
-            Wishlists = new HashSet<Wishlist>();
         }
 
         public int ProductId { get; set; }
@@ -27,9 +25,7 @@ namespace Grad_Project.Models
         public string? Category { get; set; }
         public byte[]? Attachments { get; set; }
 
-        public virtual ICollection<Cart> Carts { get; set; }
         public virtual ICollection<Rating> Ratings { get; set; }
         public virtual ICollection<Restocking> Restockings { get; set; }
-        public virtual ICollection<Wishlist> Wishlists { get; set; }
     }
 }

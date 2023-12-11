@@ -21,12 +21,12 @@ namespace Grad_Project.Controllers
         }
 
         // GET: api/Wishlists
-        [HttpGet("id")]
-        public async Task<ActionResult<IEnumerable<Wishlist>>> GetWishlists(int id)
+        [HttpGet("customerId")]
+        public async Task<ActionResult<IEnumerable<Wishlist>>> GetWishlists(int customerId)
         {
-            if (_context.Wishlists.Any(x => x.CustomerId == id))
+            if (_context.Wishlists.Any(x => x.CustomerId == customerId))
             {
-                return await _context.Wishlists.Where(x => x.CustomerId == id).ToListAsync();
+                return await _context.Wishlists.Where(x => x.CustomerId == customerId).ToListAsync();
             }
             else
             {
@@ -35,8 +35,8 @@ namespace Grad_Project.Controllers
         }
 
         // GET: api/Wishlists/5
-        [HttpPost("{customerId}/{productId}")]
-        public IActionResult AddToWishlist(int customerId, int productId)
+        [HttpPost("{customerId}/{productName}")]
+        public IActionResult AddToWishlist(int customerId, string productName)
         {
             // Retrieve the customer
             var customer = _context.Customers.FirstOrDefault(c => c.CustomerId == customerId);
@@ -49,8 +49,7 @@ namespace Grad_Project.Controllers
             var wishlistItem = new Wishlist
             {
                 CustomerId = customerId,
-                ProductId = productId
-                // You might need to set other properties of the Wishlist entity based on your model
+                ProductName = productName
             };
 
             // Add the Cart entity to the database
@@ -59,12 +58,12 @@ namespace Grad_Project.Controllers
             return Ok("Item added to the cart successfully.");
         }
 
-        [HttpDelete("deleteWishItem/{customerId}/{productId}")]
-        public IActionResult DeleteCartItem(int customerId, int productId)
+        [HttpDelete("deleteWishItem/{wishlistId}")]
+        public IActionResult DeleteCartItem(int wishlistId)
         {
             try
             {
-                var wishItem = _context.Wishlists.FirstOrDefault(c => c.CustomerId == customerId && c.ProductId == productId);
+                var wishItem = _context.Wishlists.FirstOrDefault(c => c.WishlistId == wishlistId);
 
                 if (wishItem != null)
                 {

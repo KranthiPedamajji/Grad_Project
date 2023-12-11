@@ -46,13 +46,13 @@ namespace Grad_Project.Models
 
                 entity.HasIndex(e => e.CustomerId, "customer_id");
 
-                entity.HasIndex(e => e.ProductId, "product_id");
-
                 entity.Property(e => e.CartId).HasColumnName("cart_id");
 
                 entity.Property(e => e.CustomerId).HasColumnName("customer_id");
 
-                entity.Property(e => e.ProductId).HasColumnName("product_id");
+                entity.Property(e => e.ProductName)
+                    .HasMaxLength(300)
+                    .HasColumnName("product_name");
 
                 entity.Property(e => e.Quantity).HasColumnName("quantity");
 
@@ -60,11 +60,6 @@ namespace Grad_Project.Models
                     .WithMany(p => p.Carts)
                     .HasForeignKey(d => d.CustomerId)
                     .HasConstraintName("cart_ibfk_1");
-
-                entity.HasOne(d => d.Product)
-                    .WithMany(p => p.Carts)
-                    .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("cart_ibfk_2");
             });
 
             modelBuilder.Entity<Customer>(entity =>
@@ -356,9 +351,7 @@ namespace Grad_Project.Models
             {
                 entity.ToTable("wishlist");
 
-                entity.HasIndex(e => new { e.CustomerId, e.ProductId }, "idx_wishlist_customer_product");
-
-                entity.HasIndex(e => e.ProductId, "product_id");
+                entity.HasIndex(e => e.CustomerId, "customer_id");
 
                 entity.Property(e => e.WishlistId).HasColumnName("wishlist_id");
 
@@ -368,17 +361,14 @@ namespace Grad_Project.Models
                     .HasColumnType("date")
                     .HasColumnName("date_added");
 
-                entity.Property(e => e.ProductId).HasColumnName("product_id");
+                entity.Property(e => e.ProductName)
+                    .HasMaxLength(250)
+                    .HasColumnName("product_name");
 
                 entity.HasOne(d => d.Customer)
                     .WithMany(p => p.Wishlists)
                     .HasForeignKey(d => d.CustomerId)
                     .HasConstraintName("wishlist_ibfk_1");
-
-                entity.HasOne(d => d.Product)
-                    .WithMany(p => p.Wishlists)
-                    .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("wishlist_ibfk_2");
             });
 
             OnModelCreatingPartial(modelBuilder);

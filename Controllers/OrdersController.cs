@@ -1,4 +1,7 @@
-﻿using Grad_Project.Models;
+﻿using Grad_Project.AdventWorksModel;
+using Grad_Project.Models;
+using Grad_Project.NorthWindModels;
+using Grad_Project.Sakila;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,19 +12,21 @@ namespace Grad_Project.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
-        private readonly grad_projectContext _context;
+        private readonly grad_projectContext _gcontext;
+        private readonly sakilaContext _scontext;
+        private readonly northwindContext _ncontext;
+        private readonly adventureworksContext _acontext;
 
-        public OrdersController(grad_projectContext context)
+
+        public OrdersController(grad_projectContext context, sakilaContext _scontext, northwindContext _ncontext, adventureworksContext _acontext)
         {
-            _context = context;
+            _gcontext = context;
         }
 
         [HttpPost("createOrder")]
         public IActionResult CreateOrder([FromBody] OrdersModel orderModel)
         {
-            // Call your stored procedure using DbContext
-            _context.Database.ExecuteSqlRaw("CALL CreateOrder({0}, {1}, {2})",
-                orderModel.CustomerId, orderModel.ProductIds, orderModel.Quantities);
+            //_context.Orders.Add(newOrder);
 
             // Handle the result or return appropriate response
             return Ok("Order created successfully.");
@@ -31,20 +36,20 @@ namespace Grad_Project.Controllers
         public IActionResult CancelOrder([FromBody] int orderId)
         {
             // Call your stored procedure using DbContext
-            _context.Database.ExecuteSqlRaw("CALL CancelOrder({0})", orderId);
+            _gcontext.Database.ExecuteSqlRaw("CALL CancelOrder({0})", orderId);
 
             // Handle the result or return appropriate response
             return Ok("Order canceled successfully.");
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+        public async Task<ActionResult<IEnumerable<Models.Order>>> GetOrders()
         {
-            if (_context.Orders == null)
+            if (_gcontext.Orders == null)
             {
                 return NotFound();
             }
-            return await _context.Orders.ToListAsync();
+            return await _gcontext.Orders.ToListAsync();
         }
 
         //[HttpGet("{id}")]
@@ -65,9 +70,9 @@ namespace Grad_Project.Controllers
         //}
 
         [HttpGet("{customerId}")]
-        public ActionResult<IEnumerable<Order>> GetOrders(int customerId)
+        public ActionResult<IEnumerable<Models.Order>> GetOrders(int customerId)
         {
-            IQueryable<Order> query = _context.Orders;
+            IQueryable<Models.Order> query = _gcontext.Orders;
 
             query = query.Where(o => o.CustomerId == customerId);
 

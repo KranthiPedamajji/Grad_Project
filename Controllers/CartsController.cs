@@ -51,7 +51,7 @@ namespace Grad_Project.Controllers
             var cartItemEntity = new Cart
             {
                 CustomerId = customerId,
-                ProductId = cartItem.ProductId,
+                ProductName = cartItem.ProductName,
                 Quantity = cartItem.Quantity
             };
 
@@ -61,12 +61,12 @@ namespace Grad_Project.Controllers
             return Ok("Item added to the cart successfully.");
         }
 
-        [HttpDelete("deleteCartItem/{customerId}/{productId}")]
-        public IActionResult DeleteCartItem(int customerId, int productId)
+        [HttpDelete("deleteCartItem/{cartid}")]
+        public IActionResult DeleteCartItem(int cartid)
         {
             try
             {
-                var cartItem = _context.Carts.FirstOrDefault(c => c.CustomerId == customerId && c.ProductId == productId);
+                var cartItem = _context.Carts.FirstOrDefault(c => c.CartId == cartid);
 
                 if (cartItem != null)
                 {
