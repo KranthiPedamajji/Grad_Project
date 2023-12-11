@@ -21,6 +21,7 @@ namespace Grad_Project.Models
         public virtual DbSet<Customercredential> Customercredentials { get; set; } = null!;
         public virtual DbSet<Order> Orders { get; set; } = null!;
         public virtual DbSet<Orderstatus> Orderstatuses { get; set; } = null!;
+        public virtual DbSet<Partner> Partners { get; set; } = null!;
         public virtual DbSet<Product> Products { get; set; } = null!;
         public virtual DbSet<Rating> Ratings { get; set; } = null!;
         public virtual DbSet<Restocking> Restockings { get; set; } = null!;
@@ -195,6 +196,21 @@ namespace Grad_Project.Models
                 entity.Property(e => e.StatusName)
                     .HasMaxLength(20)
                     .HasColumnName("status_name");
+            });
+
+            modelBuilder.Entity<Partner>(entity =>
+            {
+                entity.ToTable("partners");
+
+                entity.Property(e => e.PartnerId).HasColumnName("partner_id");
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(300)
+                    .HasColumnName("description");
+
+                entity.Property(e => e.PartnerName)
+                    .HasMaxLength(50)
+                    .HasColumnName("partner_name");
             });
 
             modelBuilder.Entity<Product>(entity =>

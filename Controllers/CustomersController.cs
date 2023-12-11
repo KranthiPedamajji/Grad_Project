@@ -24,7 +24,7 @@ namespace Grad_Project.Controllers
 
         // GET: api/Customers
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
+        public async Task<ActionResult<IEnumerable<Models.Customer>>> GetCustomers()
         {
           if (_context.Customers == null)
           {
@@ -35,7 +35,7 @@ namespace Grad_Project.Controllers
 
         // GET: api/Customers/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Customer>> GetCustomer(int id)
+        public async Task<ActionResult<Models.Customer>> GetCustomer(int id)
         {
           if (_context.Customers == null)
           {
@@ -54,7 +54,7 @@ namespace Grad_Project.Controllers
         // PUT: api/Customers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomer(int id, Customer customer)
+        public async Task<IActionResult> PutCustomer(int id, Models.Customer customer)
         {
             if (id != customer.CustomerId)
             {
@@ -84,18 +84,18 @@ namespace Grad_Project.Controllers
 
         // POST: api/Customers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
-        {
-          if (_context.Customers == null)
-          {
-              return Problem("Entity set 'grad_projectContext.Customers'  is null.");
-          }
-            _context.Customers.Add(customer);
-            await _context.SaveChangesAsync();
+        //[HttpPost]
+        //public async Task<ActionResult<Models.Customer>> PostCustomer(  Models.Customer customer)
+        //{
+        //  if (_context.Customers == null)
+        //  {
+        //      return Problem("Entity set 'grad_projectContext.Customers'  is null.");
+        //  }
+        //    _context.Customers.Add(customer);
+        //    await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCustomer", new { id = customer.CustomerId }, customer);
-        }
+        //    return CreatedAtAction("GetCustomer", new { id = customer.CustomerId }, customer);
+        //}
 
         // DELETE: api/Customers/5
         [HttpDelete("{id}")]
@@ -123,35 +123,72 @@ namespace Grad_Project.Controllers
             return (_context.Customers?.Any(e => e.CustomerId == id)).GetValueOrDefault();
         }
 
-        [HttpPost("insert")]
-        public IActionResult SignUpCustomer([FromBody] CustomerModel customer)
+        [HttpPost]
+        public IActionResult PostCustomer([FromBody] CustomerModel customer)
         {
             try
             {
-                _context.Database.ExecuteSqlRaw(
-               "InsertCustomerAndCredentials",
-               new
-               {
-                   p_first_name = customer.FirstName,
-                   p_last_name = customer.LastName,
-                   p_email = customer.Email,
-                   p_job_title = customer.JobTitle,
-                   p_business_phone = customer.BusinessPhone,
-                   p_home_phone = customer.HomePhone,
-                   p_mobile_phone = customer.MobilePhone,
-                   p_address = customer.Address,
-                   p_city = customer.City,
-                   p_state_province = customer.StateProvince,
-                   p_zip_postal_code = customer.ZipPostalCode,
-                   p_country_region = customer.CountryRegion,
-                   p_web_page = customer.WebPage,
-                   p_notes = customer.Notes,
-                   p_attachments = customer.Attachments,
-                   p_customer_name = customer.CustomerName,
-                   p_password_hash = customer.PasswordHash
-               }
+                // _context.Database.ExecuteSqlRaw(
+                //"InsertCustomerAndCredentials",
+                //new CustomerModel
+                //{
+                //    FirstName = customer.FirstName,
+                //    LastName = customer.LastName,
+                //    Email = customer.Email,
+                //    JobTitle = customer.JobTitle,
+                //    BusinessPhone = customer.BusinessPhone,
+                //    HomePhone = customer.HomePhone,
+                //    MobilePhone = customer.MobilePhone,
+                //    Address = customer.Address,
+                //    City = customer.City,
+                //    StateProvince = customer.StateProvince,
+                //    ZipPostalCode = customer.ZipPostalCode,
+                //    CountryRegion = customer.CountryRegion,
+                //    WebPage = customer.WebPage,
+                //    Notes = customer.Notes,
+                //    Attachments = customer.Attachments,
+                //    CustomerName = customer.CustomerName,
+                //    PasswordHash = customer.PasswordHash
+                //}
 
-           );
+                //);
+                // Insert data into Customers table
+                var newCustomer = new Models.Customer
+                {
+                    FirstName = customer.FirstName,
+                    LastName = customer.LastName,
+                    Email = customer.Email,
+                    JobTitle = customer.JobTitle,
+                    BusinessPhone = customer.BusinessPhone,
+                    HomePhone = customer.HomePhone,
+                    MobilePhone = customer.MobilePhone,
+                    Address = customer.Address,
+                    City = customer.City,
+                    StateProvince = customer.StateProvince,
+                    ZipPostalCode = customer.ZipPostalCode,
+                    CountryRegion = customer.CountryRegion,
+                    WebPage = customer.WebPage,
+                    Notes = customer.Notes,
+                    Attachments = customer.Attachments
+                };
+
+                _context.Customers.Add(newCustomer);
+                _context.SaveChanges();
+
+                // Get the auto-generated customer_id for the newly inserted customer
+                var newCustomerId = newCustomer.CustomerId;
+
+                // Insert data into CustomerCredentials table
+                var newCustomerCredentials = new Customercredential
+                {
+                    CustomerId = newCustomerId,
+                    CustomerName = customer.CustomerName,
+                    PasswordHash = customer.PasswordHash,
+                };
+
+                _context.Customercredentials.Add(newCustomerCredentials);
+                _context.SaveChanges();
+
                 return Ok("Customer and credentials inserted successfully.");
             }
             catch (Exception ex)
