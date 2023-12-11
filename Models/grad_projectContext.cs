@@ -50,6 +50,8 @@ namespace Grad_Project.Models
 
                 entity.Property(e => e.CustomerId).HasColumnName("customer_id");
 
+                entity.Property(e => e.Price).HasColumnName("price");
+
                 entity.Property(e => e.ProductName)
                     .HasMaxLength(300)
                     .HasColumnName("product_name");

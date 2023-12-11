@@ -26,7 +26,7 @@ namespace Grad_Project.Controllers
         {
             if (_context.Carts.Any(x => x.CustomerId == id))
             {
-                return await _context.Carts.Where(x => x.CustomerId == id).ToListAsync();
+                return await _context.Carts.Where(x => x.CartId == id).ToListAsync();
             }
             else
             {
@@ -52,7 +52,8 @@ namespace Grad_Project.Controllers
             {
                 CustomerId = customerId,
                 ProductName = cartItem.ProductName,
-                Quantity = cartItem.Quantity
+                Quantity = cartItem.Quantity,
+                Price = cartItem.Price
             };
 
             // Add the Cart entity to the database
