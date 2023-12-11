@@ -38,7 +38,7 @@ builder.Services.AddDbContext<sakilaContext>(optionsAction: _ =>
 
 builder.Services.AddDbContext<northwindContext>(optionsAction: _ =>
 {
-    _.UseMySQL(connectionString: "Server=localhost;Port=3306;Database=northwinds;User=root;Password=MysqlKranthi;");
+    _.UseMySQL(connectionString: "Server=localhost;Port=3306;Database=northwind;User=root;Password=MysqlKranthi;");
 });
 
 builder.Services.AddSwaggerGen(options =>

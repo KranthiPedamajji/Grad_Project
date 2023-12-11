@@ -24,10 +24,10 @@ namespace Grad_Project.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
         {
-          if (_context.Customers == null)
-          {
-              return NotFound();
-          }
+            if (_context.Customers == null)
+            {
+                return NotFound();
+            }
             return await _context.Customers.ToListAsync();
         }
 
@@ -35,10 +35,10 @@ namespace Grad_Project.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Customer>> GetCustomer(int id)
         {
-          if (_context.Customers == null)
-          {
-              return NotFound();
-          }
+            if (_context.Customers == null)
+            {
+                return NotFound();
+            }
             var customer = await _context.Customers.FindAsync(id);
 
             if (customer == null)
@@ -49,5 +49,33 @@ namespace Grad_Project.Controllers
             return customer;
         }
 
+        [HttpGet("products")]
+        public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
+        {
+            if (_context.Products == null)
+            {
+                return NotFound();
+            }
+            return await _context.Products.ToListAsync();
+
+
+        }
+
+        [HttpGet("proucts/{id}")]
+        public async Task<ActionResult<Product>> GetProucts(int id)
+        {
+            if (_context.Customers == null)
+            {
+                return NotFound();
+            }
+            var customer = await _context.Products.FindAsync(id);
+
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            return customer;
+        }
     }
 }
