@@ -21,12 +21,12 @@ namespace Grad_Project.Controllers
         }
 
         // GET: api/CartsWishList
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<IEnumerable<Cart>>> GetCart(int id)
         {
             if (_context.Carts.Any(x => x.CustomerId == id))
             {
-                return await _context.Carts.Where(x => x.CartId == id).ToListAsync();
+                return await _context.Carts.Where(x => x.CustomerId == id).ToListAsync();
             }
             else
             {
