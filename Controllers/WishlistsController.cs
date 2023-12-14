@@ -21,7 +21,7 @@ namespace Grad_Project.Controllers
         }
 
         // GET: api/Wishlists
-        [HttpGet("customerId")]
+        [HttpGet("{customerId}")]
         public async Task<ActionResult<IEnumerable<Wishlist>>> GetWishlists(int customerId)
         {
             if (_context.Wishlists.Any(x => x.CustomerId == customerId))

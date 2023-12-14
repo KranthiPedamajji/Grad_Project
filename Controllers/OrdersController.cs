@@ -91,8 +91,9 @@ namespace Grad_Project.Controllers
         [HttpPost("cancelOrder")]
         public IActionResult CancelOrder([FromBody] int orderId)
         {
-            // Call your stored procedure using DbContext
-            _context.Database.ExecuteSqlRaw("CALL CancelOrder({0})", orderId);
+            //var Items = _context.Orderdetails.Where(c => c.CustomerId == customerId).ToList();
+
+            //_context.Carts.RemoveRange(cartItems);
 
             // Handle the result or return appropriate response
             return Ok("Order canceled successfully.");
